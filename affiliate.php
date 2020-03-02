@@ -472,7 +472,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                 
         
                 foreach($all_sessions as $one_ses){
-                    $sess_name = explode(" ", $one_ses->name)[0]." ".$thisYear;
+                    $sess_name = explode(" ", $one_ses->name)[0]."  ".explode("-", $one_ses->start_date_raw)[0];
                     $com = "No";
             
         
@@ -979,7 +979,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <thead>
                         <tr>
                             <th>Date - Intake Sessions</th>
-                            <th>Partners' Name</th>
+                            <!--<th>Partners' Name</th>-->
                             <th>Total Completed Registration</th>
                             <th>Promo</th>
                             <th>Regular</th>
@@ -991,7 +991,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         <tr>
                             <?php foreach($table as $one_data) { ?>
                             <td> <?php echo $one_data->session ?> </td>
-                            <td> <?php echo $one_data->name ?> </td>
+                            <!--<td> <?php echo $one_data->name ?> </td>-->
                             <td> <?php echo $one_data->total_reg ?> </td>
                             <td> GH&#8373 <?php echo $one_data->promo ?> </td>
                             <td> GH&#8373 <?php echo $one_data->regular ?> </td>
