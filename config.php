@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "admin"; //wealthbankers_wbwins
-$password = "";// eB7Hs@Ldi,ka
-$dbname = "affiliate";//wealthbankers_wbsites
+$username = "root"; 
+$password = "";
+$dbname = "affiliate";
 
 
 // Create connection
