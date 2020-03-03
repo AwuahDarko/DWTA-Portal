@@ -957,7 +957,6 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                 </tbody>
                 <?php } else {?>
                     <tbody>
-                
                     <tr>
                         <td> </td>
                         <td></td>
@@ -965,8 +964,6 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         <td> </td>
                         <td> </td>
                     </tr>
-                    
-
                 </tbody>
                 <?php }?>
                 </table>
@@ -1017,20 +1014,16 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                             <?php }else {?>
                                 <tbody>
                         <tr>
-                            
                             <td></td>
-                            
-                            <td>  </td>
+                            <td> </td>
                             <td> </td>
                             <td> No record to display </td>
                             <td>  </td>
                             <td> </td>
-                        </tr>
-                            
+                        </tr>  
                     </tbody>
                             <?php }?>
                 </table>
-                
             </div>
              </div>  
                 </div>
