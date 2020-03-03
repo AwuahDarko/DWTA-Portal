@@ -838,6 +838,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         <th>Application</th>
                     </tr>
                 </thead>
+                <?php if(count($display_stats_data) > 0) {?>
                 <tbody>
                     <?php $i = 0; while($i < count($display_stats_data)){?>
                     <tr>
@@ -851,19 +852,24 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <?php $i++; }?>
                     
                 </tbody>
+                    <?php }else {?>
+                        <tbody>
+                    
+                    <tr>
+                        <td> </td>
+                        <td> </td>
+                        <td> No record to display  </td>
+                        <td>  </td>
+                        <td>  </td>
+                    </tr>
+
+                    
+                    
+                </tbody>
+                    <?php }?>
                 </table>
                 </div>
-                <!-- <div class="text-center">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled"><a href="#"><i class="fa fa-long-arrow-left"></i> Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next <i class="fa fa-long-arrow-right"></i></a></li>
-                </ul>
-                </div> -->
+                
              </div>     
                 </div>
                 <div class="tab-pane" id="tab-eg2-1" role="tabpanel">
@@ -885,6 +891,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         <th>Registration Date</th>
                     </tr>
                 </thead>
+                <?php if (count($display_link_data) > 0){?>
                 <tbody>
                     <?php foreach($display_link_data as $one_data){ ?>
                     <tr>
@@ -897,19 +904,22 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <?php }?>
                     
                 </tbody>
+                    <?php }else {?>
+                        <tbody>
+                    
+                    <tr>
+                        <td> </td>
+                        <td></td>
+                        <td> No record to display</td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+
+                </tbody>
+                    <?php }?>
                 </table>
                 </div>
-                <!-- <div class="text-center">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled"><a href="#"><i class="fa fa-long-arrow-left"></i> Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next <i class="fa fa-long-arrow-right"></i></a></li>
-                </ul>
-                </div> -->
+                
              </div>  
                 </div> 
 
@@ -932,6 +942,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         <th>Registration Date</th>
                     </tr>
                 </thead>
+                <?php if(count($display_code_data) > 0) {?>
                 <tbody>
                 <?php foreach($display_code_data as $one_data){ ?>
                     <tr>
@@ -944,18 +955,22 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <?php }?>
 
                 </tbody>
+                <?php } else {?>
+                    <tbody>
+                
+                    <tr>
+                        <td> </td>
+                        <td></td>
+                        <td> No record to display</td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                    
+
+                </tbody>
+                <?php }?>
                 </table>
-                <!-- <div class="text-center">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled"><a href="#"><i class="fa fa-long-arrow-left"></i> Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next <i class="fa fa-long-arrow-right"></i></a></li>
-                </ul>
-                </div> -->
+               
                 </div>
              </div>  </div>
                 <div class="tab-pane" id="tab-eg2-3" role="tabpanel">
@@ -979,7 +994,6 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <thead>
                         <tr>
                             <th>Date - Intake Sessions</th>
-                            <!--<th>Partners' Name</th>-->
                             <th>Total Completed Registration</th>
                             <th>Promo</th>
                             <th>Regular</th>
@@ -987,11 +1001,11 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                             <th>Commission Paid</th>
                         </tr>
                     </thead>
+                    <?php if(count($table) > 0){?>
                     <tbody>
                         <tr>
                             <?php foreach($table as $one_data) { ?>
                             <td> <?php echo $one_data->session ?> </td>
-                            <!--<td> <?php echo $one_data->name ?> </td>-->
                             <td> <?php echo $one_data->total_reg ?> </td>
                             <td> GH&#8373 <?php echo $one_data->promo ?> </td>
                             <td> GH&#8373 <?php echo $one_data->regular ?> </td>
@@ -1000,18 +1014,23 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         </tr>
                             <?php }?>
                     </tbody>
+                            <?php }else {?>
+                                <tbody>
+                        <tr>
+                            
+                            <td></td>
+                            
+                            <td>  </td>
+                            <td> </td>
+                            <td> No record to display </td>
+                            <td>  </td>
+                            <td> </td>
+                        </tr>
+                            
+                    </tbody>
+                            <?php }?>
                 </table>
-                <!-- <div class="text-center">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled"><a href="#"><i class="fa fa-long-arrow-left"></i> Previous</a></li>
-                    <li class="page-item"><a href="#" class="page-link">1</a></li>
-                    <li class="page-item"><a href="#" class="page-link">2</a></li>
-                    <li class="page-item active"><a href="#" class="page-link">3</a></li>
-                    <li class="page-item"><a href="#" class="page-link">4</a></li>
-                    <li class="page-item"><a href="#" class="page-link">5</a></li>
-                    <li class="page-item"><a href="#" class="page-link">Next <i class="fa fa-long-arrow-right"></i></a></li>
-                </ul>
-                </div> -->
+                
             </div>
              </div>  
                 </div>
