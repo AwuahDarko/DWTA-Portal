@@ -94,7 +94,7 @@
             
             
                     // get all active affiliates;
-                    $sql = "SELECT name, email, affiliate_id  FROM wp_aff_affiliates where status = 'active'"; 
+                    $sql = "SELECT name, email, affiliate_id  FROM wbaca_aff_affiliates where status = 'active'"; 
                     $result = $this->conn->query($sql);
             
                     if ($result->num_rows > 0) {
@@ -153,7 +153,7 @@
                              // get email that is linked to referals as currency
                             $email_arrays = array();
             
-                            $sql = "SELECT currency_id from wp_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
+                            $sql = "SELECT currency_id from wbaca_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
             
                             $d1 = "$one_ses->start_date_raw 00:00:00";
                             $d2 = "$one_ses->end_date_raw 23:59:59";
@@ -177,7 +177,7 @@
                             foreach($email_arrays as $one_mail){
                         
                                 $w = strtolower($one_mail.'%');
-                                $sql = "SELECT item_id from wp_frm_item_metas where meta_value like ? and (created_at between ? and ?) order by created_at";
+                                $sql = "SELECT item_id from wbaca_frm_item_metas where meta_value like ? and (created_at between ? and ?) order by created_at";
             
                                 $stmt = $this->conn->prepare($sql); 
                                 $stmt->bind_param("sss", $w, $d1, $d2);
@@ -368,20 +368,20 @@
                 <div class="app-header-right">
                     <div class="header-btn-lg pr-0">
                         <div class="widget-content p-0">
-                            <div class="widget-content-wrapper">
-                                <div class="jack-knife">
-                                <a href="register.php" class="logout-link">Register</a>
-                                <a href="confirm-payment.php" class="logout-link">Affiliates</a>
-                                    <a href="approve.php" class="logout-link">Fees</a>
-                                    <a href="logout.php" class="logout-link">SignOut</a>
-                                    <!-- <div class="btn-group" style="text-decoration: none;">
+                           <div class="widget-content-wrapper">
+                                 <div class="widget-content-left">
+                                  <div class="btn-group" style="text-decoration: none;">
+                                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                            <img width="42" class="rounded-circle" src="assets/images/avatars/1.jpg" alt="">
+                                            <i class="fa fa-angle-down ml-2 opacity-10" style="color: #000;"></i>
+                                        </a>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                                            <a href="approve.html"><button type="button" tabindex="0" class="dropdown-item">Recruited Students</button></a>
-                                            <a href="confirm.html"><button type="button" tabindex="0" class="dropdown-item">Payout Records</button></a>
-                                             <div tabindex="-1" class="dropdown-divider"></div>
-                                            <a href="add.html"><button type="button" tabindex="0" class="dropdown-item">Settings</button></a>
+                                            <a href="approve.php"><button type="button" tabindex="0" class="dropdown-item">Recruited Students</button></a>
+                                            <a href="confirm-payment.php"><button type="button" tabindex="0" class="dropdown-item">Payout Records</button></a>
+                                            <a href="register.php"><button type="button" tabindex="0" class="dropdown-item">Settings</button></a>
+                                            <a href="logout.php"><button type="button" tabindex="0" class="dropdown-item">Sign Out</button></a>
                                          </div>
-                                    </div>  -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -411,11 +411,11 @@
                                         </div>
                                     </div>
                                     <div style="overflow-x:auto;">
-                                        <table class="table table-striped" id="myTable">
+                                        <table class="table table-striped" id="data">
                                             <thead>
                                                 <tr>
                                                     <th>Date - Intake Sessions</th>
-                                                    <th>Partners' Name</th>
+                                                    <th>Partner's Name</th>
                                                     <th>Total Completed Registration</th>
                                                     <th>Promo</th>
                                                     <th>Regular</th>
@@ -439,7 +439,7 @@
                                                         <input name="affiliate" value="<?php echo $one_data->affiliate_id; ?>" style="display: none">
                                                         <input class="tgl tgl-flip" id="<?php echo $one_data->id."cb5" ?>" type="checkbox" name="status"
                                                         value="<?php echo $one_data->complete; ?>" <?php if($one_data->complete === "Yes"){echo "checked";} ?>>
-                                                        <label class="tgl-btn" data-tg-off="No" data-tg-on="Yes"  for="<?php echo $one_data->id."cb5";?>"></label>
+                                                        <label class="tgl-btn" data-tg-off="No" data-tg-on="Yes"  for="<?php echo $one_data->id."cb5";?>" style = "margin-right: 10px;"></label>
                                                         <input type="submit" class="btn btn-success h-25" value="Save">
                                                     </form>
                                                     </td>

@@ -12,7 +12,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
   require_once "affiliates-link-stats.php";
   require_once "affiliate-code-stats.php";
   require_once "current-session.php";
-//   require_once "affiliate-data.php";
   require_once "confirm-table.php";
   require_once "referral-data.php";
   require_once "commission.php";
@@ -21,7 +20,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
 
   $person_email = $_SESSION['Email'];
   $invite_code = $_SESSION['Code'];
-  $general_url = "";
   $affiliate_id;
   $affiliate_link = "";
   $start_date = "";
@@ -34,21 +32,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
 
 
   // Getting the affiliate url
-  //1. fetch general url
-    $sql = "select uri from wp_aff_uris where uri_id = 1";
-    $result = $conn->query($sql);
 
+    //1. get affiliate id;
 
-    if ($result->num_rows > 0) {
-        // output data of each row
-        while($row = $result->fetch_assoc()) {
-            $general_url = $row['uri'];
-        }
-    } 
-
-    //2. get affiliate id;
-
-        $sql = "select affiliate_id, from_date from wp_aff_affiliates where email = ?";
+        $sql = "select affiliate_id, from_date from wbaca_aff_affiliates where email = ?";
 
         $st = $conn->prepare($sql); 
         $st->bind_param("s", $person_email);
@@ -66,16 +53,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
             }
         }
 
-        // split general url and append id
-        $gen = explode("=", $general_url);
+    
 
-        $affiliate_link = "$gen[0]=$affiliate_id";
+        $affiliate_link = "https://wealthbankers.com/academy?info=".$affiliate_id;
 //=====================================================
-
-        // get affiliate registration date
         
-
-
         // fetch current session date
         $todayDate = date("Y-m-d");
 
@@ -99,7 +81,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
 
     $all_hit_dates = array();
     // fetch all hits for this affiliate both current and past
-    $sql = "SELECT date from wp_aff_hits where affiliate_id = ?";
+    $sql = "SELECT date from wbaca_aff_hits where affiliate_id = ?";
     $stmt = $conn->prepare($sql); 
         $stmt->bind_param("i", $affiliate_id);
         $stmt->execute();
@@ -126,17 +108,18 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         }
 
 
+
         if ($todayDate < $end_date){
             $date_to_end = $todayDate;
         }else{
             $date_to_end = $end_date;
         }
-
+        
         
 
 
         $relevant_dates = array();
-        $date_from = strtotime($date_to_end); // Convert date to a UNIX timestamp  
+        $date_from = strtotime($date_to_start); // Convert date to a UNIX timestamp  
 
         $date_to = strtotime($date_to_end); 
         
@@ -163,7 +146,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         // Unique visits
         $user_agent_ids = array();
 
-        $sql = "SELECT user_agent_id from wp_aff_user_agents";
+        $sql = "SELECT user_agent_id from wbaca_aff_user_agents";
 
         $result = $conn->query($sql);
 
@@ -177,7 +160,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         // get date for unique visits
        $unique_visits_with_date = array();
             for ($i = 0; $i < count($user_agent_ids); $i++){
-                $sql = "select date from wp_aff_hits where user_agent_id = ? and affiliate_id = ?  order by date limit 1";
+                $sql = "select date from wbaca_aff_hits where user_agent_id = ? and affiliate_id = ?  order by date limit 1";
     
                 $stmt = $conn->prepare($sql); 
                 $stmt->bind_param("ii", $user_agent_ids[$i], $affiliate_id);
@@ -198,7 +181,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         $application_list = array();
 
         foreach($relevant_dates as $one_date){
-            $sql = "select count(*) from wp_aff_referrals where affiliate_id = ? and (datetime > ? and datetime < ?)";
+            $sql = "select count(*) from wbaca_aff_referrals where affiliate_id = ? and (datetime > ? and datetime < ?)";
 
             $d1 = "$one_date 00:00:00";
             $d2 = "$one_date 23:59:59";
@@ -252,6 +235,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
             $statsTable->site_visit = 0;
 
             array_push($display_stats_data, $statsTable);
+            
         }
         //=================== END OF BY STATS ==========================================================================================================================================================//
 
@@ -260,7 +244,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         // get email that is linked to referals as currency
         $email_arrays = array();
 
-        $sql = "SELECT currency_id from wp_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
+        $sql = "SELECT currency_id from wbaca_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
 
         $d1 = "$start_date 00:00:00";
         $d2 = "$end_date 23:59:59";
@@ -284,7 +268,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         foreach($email_arrays as $one_mail){
        
             $w = strtolower($one_mail.'%');
-            $sql = "SELECT item_id from wp_frm_item_metas where meta_value like ? and (created_at between ? and ?) order by created_at";
+            $sql = "SELECT item_id from wbaca_frm_item_metas where meta_value like ? and (created_at between ? and ?) order by created_at";
 
             $stmt = $conn->prepare($sql); 
             $stmt->bind_param("sss", $w, $start_date, $end_date);
@@ -325,7 +309,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         }
 
         // get referrals data
-        $sql = "SELECT * FROM wp_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
+        $sql = "SELECT * FROM wbaca_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
 
 
         $d1 = "$start_date 00:00:00";
@@ -362,7 +346,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] != true){
         //===================START OF BY CODE===========================================================================================//
 
         // use the affiliate code to get form id
-$sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items join dwta_students_payment on dwta_students_payment.Application_ID = wp_frm_items.id where name = ? and (created_at between ?  and ?);";
+$sql = "SELECT id, created_at, Approval_Date, Payment_Status from wbaca_frm_items join dwta_students_payment on dwta_students_payment.Application_ID = wbaca_frm_items.id where name = ? and (created_at between ?  and ?);";
 
 
             $d1 = "$start_date 00:00:00";
@@ -397,22 +381,21 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
         public $array_for_ids = array();
         private $conn;
         private $affiliate_id;
+        private $todayDate;
 
         function __construct($conn, $aff_id)
         {
             $this->conn = $conn;
             $this->affiliate_id = $aff_id;
+            $this->todayDate = date('Y-m-d');
         }
 
         function confirmPayment(){
             $all_sessions = array();
-                // $all_affiliates =  array();
                 $table = array();
                 $all_promo = array();
                 $all_regular_commission = array();
            
-                
-        
                 // get promo details
                 $sql = "select Amount, Lower_Boundary, Upper_Boundary from promo_commission_details";
                 $result = $this->conn->query($sql);
@@ -438,12 +421,10 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
         
                         array_push($all_regular_commission, $pro);
                     }
-                }
-        
+                }        
         
         
                 // get intake sessions
-                $thisYear = date('Y');
         
                 $sql = "SELECT * from dwta_sessions";
                 $result = $this->conn->query($sql);
@@ -451,15 +432,19 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                 if ($result->num_rows > 0) {
         
                     while($row = $result->fetch_assoc()) {
-                        $session = new CurrentSession();
-                        $session->id = $row['Session_ID']; 
-                        $session->name = $row['Name'];
-                        $session->start_date = getDate(strtotime($row['Start_Date']));
-                        $session->end_date = getDate(strtotime($row['End_Date']));
-                        $session->start_date_raw = $row['Start_Date']; 
-                        $session->end_date_raw = $row['End_Date']; 
-        
-                        array_push($all_sessions, $session);
+
+                        if ($row['Start_Date'] <= $this->todayDate && $row['End_Date'] >= $this->todayDate){
+                            $session = new CurrentSession();
+                            $session->id = $row['Session_ID']; 
+                            $session->name = $row['Name'];
+                            $session->start_date = getDate(strtotime($row['Start_Date']));
+                            $session->end_date = getDate(strtotime($row['End_Date']));
+                            $session->start_date_raw = $row['Start_Date']; 
+                            $session->end_date_raw = $row['End_Date']; 
+            
+                            array_push($all_sessions, $session);
+                        }
+     
                     }
                 }
         
@@ -473,12 +458,10 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
         
                 foreach($all_sessions as $one_ses){
                     $sess_name = explode(" ", $one_ses->name)[0]."  ".explode("-", $one_ses->start_date_raw)[0];
-                    $com = "No";
-            
-        
+                    
+                        $com = "No";
                         $i++;
-        
-                       $promo = 0;
+                        $promo = 0;
         
                         // get promo referrals
                         $sql = "SELECT count(*) from promo_referals where (createdDatetime >= ? and createdDatetime <= ?) and affiliate_id = ?";
@@ -501,7 +484,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                          // get email that is linked to referals as currency
                         $email_arrays = array();
         
-                        $sql = "SELECT currency_id from wp_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
+                        $sql = "SELECT currency_id from wbaca_aff_referrals WHERE affiliate_id = ? and (datetime > ? and datetime < ?) order by datetime;";
         
                         $d1 = "$one_ses->start_date_raw 00:00:00";
                         $d2 = "$one_ses->end_date_raw 23:59:59";
@@ -525,7 +508,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         foreach($email_arrays as $one_mail){
                     
                             $w = strtolower($one_mail.'%');
-                            $sql = "SELECT item_id from wp_frm_item_metas where meta_value like ? and (created_at between ? and ?) order by created_at";
+                            $sql = "SELECT item_id from wbaca_frm_item_metas where meta_value like ? and (created_at between ? and ?) order by created_at";
         
                             $stmt = $this->conn->prepare($sql); 
                             $stmt->bind_param("sss", $w, $d1, $d2);
@@ -593,10 +576,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         }
         
                         $total_commission = $promo + $regular;
-        
-                      
-                        
-                        
+
                         $aff_data = new ConfirmTable( $i, $sess_name, "", $the_data, $promo, $regular, $total_commission, $this->affiliate_id, $com);
                         $the_data = array();
                         array_push($table, $aff_data); 
@@ -639,26 +619,29 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                 <span>
                     <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
                         <span class="btn-icon-wrapper">
-                            <i class="fa fa-ellipsis-v fa-w-6"></i>
+                             <a href="logout.php" class="logout-link" style="color: #fff !important; font-weight: bold;">Sign Out</a>
                         </span>
                     </button>
                 </span>
             </div>   
             <div class="app-header__content">
-                <div class="app-header-right">
+                <div class="app-header-left" style="padding-left: 85px;">
+                    <h4 style="font-size: 1.2rem; color: #fff; font-weight: bold;">DWTA PARTNERS PORTAL</h4>
+                </div>
+               <div class="app-header-right">
                     <div class="header-btn-lg pr-0">
                         <div class="widget-content p-0">
                             <div class="widget-content-wrapper">
                                 <div class="widget-content-left">
-                                <a href="logout.php" class="logout-link">SignOut</a>
-                                    <!-- <div class="btn-group" style="text-decoration: none;">
+                                <a href="logout.php" class="logout-link" style="color: #fff !important;">Sign Out</a>
+                                    <div class="btn-group" style="text-decoration: none;">
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
                                             <a href="approve.html"><button type="button" tabindex="0" class="dropdown-item">Recruited Students</button></a>
                                             <a href="confirm.html"><button type="button" tabindex="0" class="dropdown-item">Payout Records</button></a>
                                              <div tabindex="-1" class="dropdown-divider"></div>
                                             <a href="add.html"><button type="button" tabindex="0" class="dropdown-item">Settings</button></a>
                                          </div>
-                                    </div>  -->
+                                    </div> 
                                 </div>
                             </div>
                         </div>
@@ -773,8 +756,8 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                             </div>
                            
                         </div>
-                        <div class="row">
-                          <div class="col-md-10 col-xl-4">
+                        <!-- <div class="row">
+                          <div class="col-md-10 col-xl-4"> -->
                                 <div class="card mb-3 widget-content"  style="background-color: #fff;">
                                     <div class="widget-content-outer">
                                         <div class="widget-content-wrapper">
@@ -785,36 +768,35 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                                          </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                           <!--  </div>
+                        </div> -->
     <div class="row">
         <div class="col-md-12">
              <div class="main-card mb-3 card">
                         <div class="card-header"><i class="header-icon lnr-license icon-gradient bg-plum-plate"> </i>
-                            <div class="btn-actions-pane-right">
-                                <div class="nav">
+                            <div class="btn-actions-pane-left">
+                                <div class="nav mine">
                                     <a data-toggle="tab" href="#tab-eg2-0" class="btn-pill btn-wide active btn btn-outline-alternate btn-sm">Stats</a>
-                                    <a data-toggle="tab" href="#tab-eg2-1" class="btn-pill btn-wide mr-1 ml-1  btn btn-outline-alternate btn-sm">By Link</a>
+                                    <a data-toggle="tab" href="#tab-eg2-1" class="btn-pill btn-wide btn btn-outline-alternate btn-sm">BY LINK</a>
                                     <a data-toggle="tab" href="#tab-eg2-2" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">By Code / ID</a>
                                     <a data-toggle="tab" href="#tab-eg2-3" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">Payouts</a>
-                                    <a data-toggle="btn" href="#" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">Promo Materials</a>
-                                    <a data-toggle="btn" href="#" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">Application Form</a>
+                                    <a data-toggle="btn" href="https://wealthbankers.com/academy/promo-materials" target="_blank" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">Promo Materials</a>
+                                    <a data-toggle="btn" href="https://wealthbankers.com/academy/apply" target="_blank" class="btn-pill btn-wide  btn btn-outline-alternate btn-sm">Application Form</a>
                                 </div>
                             </div>
                         </div>
                      <div class="card-header">
                              <div class="btn-actions-pane-right">
-                                <div class="nav">
-                                 <div class="search-box">
-                                 <div class="search-wrapper active">
-                                   <div class="input-holder">                               
-                                    <input type="text" id="search" class="search-input" placeholder="Type to search">
-                                  <button class="search-icon"><span></span></button>
-                                 </div>
-                                 <button class="close"></button>
-                                </div>
-                              </div>
+                             <!--    <div class="nav"> -->
+                                 <!-- <div class="col-sm-6"> -->
+                                     <div class="search-box">
+                                        <div class="input-group">                               
+                                         <input type="text" id="search" class="form-control" placeholder="Search by Name">
+                                 <span class="input-group-addon"><i class="material-icons">&#xE8B6;</i></span>
                             </div>
+                        </div>
+                    <!-- </div> -->
+                            <!-- </div> -->
                         </div>
                     </div>
         <div class="card-body">
@@ -827,8 +809,8 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     </div>
                    
                 </div>
-                <div style="overflow-x:auto;">
-                <table class="table table-striped" id="myTable">
+                <div style="overflow-x:auto; overflow-y:hidden;">
+                <table class="table table-striped" id="data">
                 <thead>
                     <tr>
                         <th>Date</th>
@@ -844,7 +826,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <tr>
                         <td> <?php echo $display_stats_data[$i]->date ?></td>
                         <td> <?php echo $display_stats_data[$i]->total_hit ?> </td>
-                        <td> <?php echo $display_stats_data[$i]->site_visit ?> </td>
+                        <td> <?php echo $display_stats_data[$i]->total_hit ?> </td>
                         <td> <?php echo $display_stats_data[$i]->unique_visit ?> </td>
                         <td> <?php echo $display_stats_data[$i]->application ?> </td>
                     </tr>
@@ -855,11 +837,9 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <?php }else {?>
                         <tbody>
                     <tr>
-                        <td> </td>
-                        <td> </td>
-                        <td> No record to display  </td>
-                        <td>  </td>
-                        <td>  </td>
+                     <tr>
+                        <td style="font-size: 20px" colspan="5">No record to display</td>
+                    </tr>
                     </tr>
                 </tbody>
                     <?php }?>
@@ -876,8 +856,8 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     </div>
                  
                 </div>
-                <div style="overflow-x:auto;">
-                <table class="table table-striped" id="myTable">
+                <div style="overflow-x:auto; overflow-y:hidden;">
+                <table class="table table-striped" id="data2">
                 <thead>
                     <tr>
                         <th>Application No.</th>
@@ -904,11 +884,9 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                         <tbody>
                     
                     <tr>
-                        <td> </td>
-                        <td></td>
-                        <td> No record to display</td>
-                        <td> </td>
-                        <td> </td>
+                       <tr>
+                        <td style="font-size: 20px" colspan="5">No record to display</td>
+                    </tr>
                     </tr>
 
                 </tbody>
@@ -927,8 +905,8 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     </div>
                     
                 </div>
-                <div style="overflow-x:auto;">
-                <table class="table table-striped" id="myTable">
+                <div style="overflow-x:auto; overflow-y:hidden;">
+                <table class="table table-striped" id="data3">
                 <thead>
                     <tr>
                         <th>Application No.</th>
@@ -954,11 +932,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                 <?php } else {?>
                     <tbody>
                     <tr>
-                        <td> </td>
-                        <td></td>
-                        <td> No record to display</td>
-                        <td> </td>
-                        <td> </td>
+                        <td style="font-size: 20px" colspan="5">No record to display</td>
                     </tr>
                 </tbody>
                 <?php }?>
@@ -972,7 +946,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                     <div class="col-sm-6">
                         <h5 class="card-header" style="border-style: none;">Payout Records</h5>
                     </div>
-                    <div class="col-sm-6">
+                    <!-- <div class="col-sm-6">
                         <div class="search-box">
                             <div class="input-group">                               
                                 <input type="text" id="search" class="form-control" placeholder="Search by Name">
@@ -980,10 +954,10 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                             </div>
                         </div>
                         <br>
-                    </div>
+                    </div> -->
                 </div>
                 <div style="overflow-x:auto;">
-                <table class="table table-striped" id="myTable">
+                <table class="table table-striped">
                     <thead>
                         <tr>
                             <th>Date - Intake Sessions</th>
@@ -994,10 +968,10 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                             <th>Commission Paid</th>
                         </tr>
                     </thead>
-                    <?php if(count($table) > 0){?>
+                    <?php if(count($table) > 0){?> 
                     <tbody>
                         <tr>
-                            <?php foreach($table as $one_data) { ?>
+                        <?php foreach($table as $one_data) { ?>
                             <td> <?php echo $one_data->session ?> </td>
                             <td> <?php echo $one_data->total_reg ?> </td>
                             <td> GH&#8373 <?php echo $one_data->promo ?> </td>
@@ -1005,20 +979,17 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
                             <td> GH&#8373 <?php echo $one_data->total ?> </td>
                             <td> <?php echo $one_data->complete ?> </td>
                         </tr>
-                            <?php }?>
-                    </tbody>
-                            <?php }else {?>
-                                <tbody>
+                    <?php }?>
+                    </tbody> 
+                            <?php }else {?> -->
+                    <tbody>
                         <tr>
-                            <td></td>
-                            <td> </td>
-                            <td> </td>
-                            <td> No record to display </td>
-                            <td>  </td>
-                            <td> </td>
+                            <tr>
+                                <td style="font-size: 20px" colspan="5">No record to display</td>
+                            </tr>
                         </tr>  
                     </tbody>
-                            <?php }?>
+                    <?php }?> 
                 </table>
             </div>
              </div>  
@@ -1044,7 +1015,6 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wp_frm_items j
     <script type="text/javascript">
     $(document).ready(function(){
         // Activate tooltips
-        
         
         // Filter table rows based on searched term
         $("#search").on("keyup", function() {

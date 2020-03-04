@@ -55,7 +55,7 @@
 
 
         // get the ids if the first and surname form
-        $sql = "SELECT id from wp_frm_fields where name = 'Surname/ Family Name' limit 1";
+        $sql = "SELECT id from wbaca_frm_fields where name = 'Surname/ Family Name' limit 1";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -67,7 +67,7 @@
 
 
         // get the ids if the first and surname form
-        $sql = "SELECT id from wp_frm_fields where name = 'First / Given Name(s)' limit 1";
+        $sql = "SELECT id from wbaca_frm_fields where name = 'First / Given Name(s)' limit 1";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -77,7 +77,7 @@
             }
         } 
 
-        $sql = "SELECT * from wp_frm_item_metas join dwta_students_payment on dwta_students_payment.Application_ID = wp_frm_item_metas.item_id where field_id = ?;";
+        $sql = "SELECT * from wbaca_frm_item_metas join dwta_students_payment on dwta_students_payment.Application_ID = wbaca_frm_item_metas.item_id where field_id = ?;";
 
         $st = $conn->prepare($sql); 
         $st->bind_param("s", $surname_field_id);
@@ -105,7 +105,7 @@
         // append first name to surname
 
         foreach($display_data as $one_val){
-            $sql = "SELECT meta_value from wp_frm_item_metas where item_id = ? and field_id = ?";
+            $sql = "SELECT meta_value from wbaca_frm_item_metas where item_id = ? and field_id = ?";
 
             $st = $conn->prepare($sql); 
             $st->bind_param("ss", $one_val->id, $firstname_field_id);
@@ -168,20 +168,22 @@
                 <div class="app-header-right">
                     <div class="header-btn-lg pr-0">
                         <div class="widget-content p-0">
-                            <div class="widget-content-wrapper">
-                                <div class="jack-knife">
-                                <a href="register.php" class="logout-link">Register</a>
-                                <a href="confirm-payment.php" class="logout-link">Affiliates</a>
-                                    <a href="approve.php" class="logout-link">Fees</a>
-                                    <a href="logout.php" class="logout-link">SignOut</a>
-                                    <!-- <div class="btn-group" style="text-decoration: none;">
+                           <div class="widget-content-wrapper">
+                                 <div class="widget-content-left">
+                                    <a href="logout.php" style="color: #fff;">Logout</a>
+                                    <div class="btn-group" style="text-decoration: none;">
+                                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                            <img width="42" class="rounded-circle" src="assets/images/avatars/1.jpg" alt="">
+                                            <i class="fa fa-angle-down ml-2 opacity-10" style="color: #000;"></i>
+                                        </a>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                                            <a href="approve.html"><button type="button" tabindex="0" class="dropdown-item">Recruited Students</button></a>
-                                            <a href="confirm.html"><button type="button" tabindex="0" class="dropdown-item">Payout Records</button></a>
-                                             <div tabindex="-1" class="dropdown-divider"></div>
-                                            <a href="add.html"><button type="button" tabindex="0" class="dropdown-item">Settings</button></a>
+                                            <a href="approve.php"><button type="button" tabindex="0" class="dropdown-item">Recruited Students</button></a>
+                                            <a href="confirm-payment.php"><button type="button" tabindex="0" class="dropdown-item">Payout Records</button></a>
+                                            <!--  <div tabindex="-1" class="dropdown-divider"></div> -->
+                                            <a href="register.php"><button type="button" tabindex="0" class="dropdown-item">Settings</button></a>
+                                            <a href="logout.php"><button type="button" tabindex="0" class="dropdown-item">Sign Out</button></a>
                                          </div>
-                                    </div>  -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -211,11 +213,11 @@
                                 </div>
                             </div>
                             <div style="overflow-x:auto">
-                            <table class="table table-striped" id="myTable">
+                            <table class="table table-striped" id="data">
                             <thead>
                                 <tr>
                                     <th>Application No.</th>
-                                    <th>Application Name</th>
+                                    <th>Applicant Name</th>
                                     <th>Date</th>
                                     <th>Submitted</th>
                                     <th>Complete Registration</th>

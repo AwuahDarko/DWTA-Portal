@@ -46,7 +46,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // check if  code already exist
         // Prepare a select statement
 
-        $sql = "SELECT * from wp_users where user_login = ? AND user_email = ?";
+        $sql = "SELECT * from wbaca_users where user_login = ? AND user_email = ?";
 
 
         $stmt = $conn->prepare($sql); 
@@ -104,8 +104,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $stmt->close();
         $success_message1 = "New user added successfully";
     }
-    
-   
+
 
 //=================================================================================================================================//
     }elseif ($formType === 2 || $formType === '2'){
@@ -118,7 +117,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         // check if  code already exist
         // Prepare a select statement
 
-        $sql = "SELECT * from wp_users where user_login = ? AND user_email = ?";
+        $sql = "SELECT * from wbaca_users where user_login = ? AND user_email = ?";
 
 
         $stmt = $conn->prepare($sql); 
@@ -176,8 +175,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $stmt->close();
         $success_message2 = "Password updated successfully";
     }
-    
-    
+
         //==================================================================================================================================//
     }elseif ($formType === 3 || $formType === "3"){
         $startDate = $_POST['startDate'];
@@ -257,8 +255,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 //======================PROMO ============================================================================//
 
         // is promotion active
-        
-        
+
         $sql = "SELECT * from promo_status limit 1";
         $result = $conn->query($sql);
 
@@ -269,8 +266,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 $promo_end = $row['End_Date'];
             }
         }
-
-
 
  // Close connection
  $conn->close();
@@ -296,11 +291,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         <div class="app-header header-shadow">
             <div class="app-header__mobile-menu">
                 <div>
-                    <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                   <!--  <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
                         <span class="hamburger-box">
 <span class="hamburger-inner"></span>
                         </span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
             <div class="app-header__menu">
@@ -316,20 +311,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <div class="app-header-right">
                     <div class="header-btn-lg pr-0">
                         <div class="widget-content p-0">
-                            <div class="widget-content-wrapper">
-                                <div class="jack-knife">
-                                <a href="register.php" class="logout-link">Register</a>
-                                <a href="confirm-payment.php" class="logout-link">Affiliates</a>
-                                    <a href="approve.php" class="logout-link">Fees</a>
-                                    <a href="logout.php" class="logout-link">SignOut</a>
-                                    <!-- <div class="btn-group" style="text-decoration: none;">
+                           <div class="widget-content-wrapper">
+                                 <div class="widget-content-left">
+                                    <div class="btn-group" style="text-decoration: none;">
+                                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                            <img width="42" class="rounded-circle" src="assets/images/avatars/1.jpg" alt="">
+                                            <i class="fa fa-angle-down ml-2 opacity-10" style="color: #000;"></i>
+                                        </a>
                                         <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu dropdown-menu-right">
-                                            <a href="approve.html"><button type="button" tabindex="0" class="dropdown-item">Recruited Students</button></a>
-                                            <a href="confirm.html"><button type="button" tabindex="0" class="dropdown-item">Payout Records</button></a>
-                                             <div tabindex="-1" class="dropdown-divider"></div>
-                                            <a href="add.html"><button type="button" tabindex="0" class="dropdown-item">Settings</button></a>
+                                            <a href="approve.php"><button type="button" tabindex="0" class="dropdown-item">Recruited Students</button></a>
+                                            <a href="confirm-payment.php"><button type="button" tabindex="0" class="dropdown-item">Payout Records</button></a>
+                                            <!--  <div tabindex="-1" class="dropdown-divider"></div> -->
+                                            <a href="register.php"><button type="button" tabindex="0" class="dropdown-item">Settings</button></a>
+                                            <a href="logout.php"><button type="button" tabindex="0" class="dropdown-item">Sign Out</button></a>
                                          </div>
-                                    </div>  -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -474,19 +470,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             <input name="formType" value="4" style="display: none"><!-- added to give this form an identity... nothing more -->
                             
                                 <div class="form-row">
-                                    <div class="col-md-6 mx-auto">
-                                        <div  class="align-items-center">
-                                        <div class="card-header-title mb-3">
-                                         PROMO PERIOD
-                                    </div>
-                                
-                                        </div>
+                                    <div class="col-md-6">
+                                       <div class="card-header-tab card-header-tab-animation card-header">
+                                <div class="card-header-title">
+                                    <i class="header-icon lnr-apartment icon-gradient bg-love-kiss"> </i>
+                                    PROMO PERIOD
+                                    <hr>
+                                </div>
+                             </div>
                                     </div>
                                 </div>
                                 
-                                <div class="align-date-pickers">
-                                        <input type="text" class="mb-3" placeholder="begins on" type="text" name="start" onfocus="this.type='date'" onblur="this.type='text'" value="<?php echo $promo_start ?>">
-                                        <input  type="text" class="mb-3"  placeholder="ends on" type="text" name="end" onfocus="this.type='date'" onblur="this.type='text'" value="<?php echo $promo_end ?>">
+                                <div class="align-date-pickers form-group mt-2">
+                                        <input type="text" class="mb-3 form-control" placeholder="begins on" type="text" name="start" onfocus="this.type='date'" onblur="this.type='text'" value="<?php echo $promo_start ?>">
+                                        <input  type="text" class="mb-3 form-control"  placeholder="ends on" type="text" name="end" onfocus="this.type='date'" onblur="this.type='text'" value="<?php echo $promo_end ?>">
                                 </div>
                                  <input type="submit" value="Save" class="w-75 mx-auto btn btn-success" >  
                              </form>
@@ -560,7 +557,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                                 </div>
                                                 <div class="col-md-4">
                                                     <div class="position-relative form-group">
-                                                        <input name="amount[]" placeholder="GH 200" value="<?php echo $one_data->amount ?>" type="text" class="form-control">
+                                                        <input name="amount[]" placeholder="GH 200" type="number" step="0.01" value="<?php echo $one_data->amount ?>" type="text" class="form-control">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-4">

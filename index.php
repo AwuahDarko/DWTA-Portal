@@ -42,7 +42,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     
     // Validate credentials
     if(empty($partnerID_err) && empty($password_err)){ 
-        $sql = "SELECT * from wp_users where user_login = ?";
+        $sql = "SELECT * from wbaca_users where user_login = ?";
 
 
         $stmt = $conn->prepare($sql); 
@@ -149,7 +149,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                   <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
                      <input type="password"  name ="password" class="form-control" placeholder="Password">
                      <span class="error-label"><?php echo $password_err; ?></span>
-                     <a href="#" style="text-decoration: none; font-weight: bold;"><p class="forgot">Forgot password?</p></a>
+                     <a href="#" style="text-decoration: none; font-weight: bold;" ><p class="forgot" data-toggle="popover" data-placement="top" data-content="Please send a  password reset email to academy@worldbankers.com">Forgot password?</p></a>
+                    
                   </div>
                   <div class="form-group">
                     <div class="row">
@@ -157,7 +158,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         
                       </div>
                       <div class="col-md-6">
-                         <input type="submit" value="Login" class="mb-2 mr-2 btn btn-primary btn-lg btn-block">
+                       <input type="submit" value="Login" class="mb-2 mr-2 btn btn-primary btn-lg btn-block">
                       </div>
                       <div class="col-md-3">
                         
@@ -170,5 +171,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
       </div>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
       <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" ></script>
+      <script type="text/javascript" src="./assets/scripts/main.js"></script></body>
 </body>
 </html>
