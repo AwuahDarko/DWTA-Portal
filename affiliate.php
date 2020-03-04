@@ -433,7 +433,7 @@ $sql = "SELECT id, created_at, Approval_Date, Payment_Status from wbaca_frm_item
         
                     while($row = $result->fetch_assoc()) {
 
-                        if ($row['Start_Date'] <= $this->todayDate && $row['End_Date'] >= $this->todayDate){
+                        if ($row['Start_Date'] <= $this->todayDate){
                             $session = new CurrentSession();
                             $session->id = $row['Session_ID']; 
                             $session->name = $row['Name'];
